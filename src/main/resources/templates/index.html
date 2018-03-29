@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>记账管理</title>
+    <script src="js/jquery-3.3.1.min.js" type="application/javascript"></script>
+    <script src="js/core.js" type="application/javascript"></script>
+    <script type="application/javascript">
+        var pageSupport = new PageSupport();
+        var pageNo = 1;
+        var pageSize = 10;
+        $(function () {
+            billType(1);
+            s();
+        });
+        function s() {
+            var startDate = $('#startDate').val();
+            var endDate = $('#endDate').val();
+            var str = /^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}(\s+([0-9]){1,2}:([0-9]){1,2}:([0-9]){1,2})??$/;
+            var r = new RegExp(str);
+            if(startDate != null && startDate != ''){
+                if(!r.test(startDate)){
+                    alert('开始日期格式不正确!');
+                    $('#startDate').focus();
+                    return;
+                }
+            }
+            if(endDate != null && endDate != ''){
+                if(!r.test(endDate)){
+                    alert('结束日期格式不正确!');
+                    $('#endDate').focus();
+                    return;
+                }
+            }
+            pageSupport.getData(pageNo, pageSize, $('#billsType').val(),startDate, endDate);
+        }
+    </script>
+    <style type="text/css">
+        .mainDiv {
+            border: black 1px solid;
+            width: 1000px;
+            margin-left: 100px;
+        }
+
+        option {
+            text-align: center;
+            align-items: center;
+        }
+
+        span {
+            margin-left: 10px;
+        }
+
+        select {
+            width: 80px;
+            align-items: center;
+            text-align: center;
+        }
+
+        tr td {
+            margin-left: 10px;
+            margin-right: 10px;
+            align-content: center;
+            align-items: center;
+        }
+
+        .title {
+            background-color: darkgray;
+        }
+    </style>
+</head>
+<body>
+<div align="center" class="mainDiv">
+    <h2>记账管理</h2>
+    <p>
+        <span>类型:</span>
+        <select id="billsType" name="billsType">
+        </select>
+        <span>时间:</span>
+        从<input type="text" id="startDate" placeholder="请输入yyyy-MM-dd格式日期" name="startDate"/>
+        到<input type="text" id="endDate" placeholder="请输入yyyy-MM-dd格式日期" name="endDate"/>
+        <input type="button" value="搜索" onclick="javascript:s();"/>
+        <input type="button" value="记账" onclick="javascript:location.href='bookkeeping.html'"/>
+    </p>
+    <table>
+        <tr class="title">
+            <td width="100px"><strong>标题</strong></td>
+            <td colspan="3" width="200px"><strong>记账时间</strong></td>
+            <td width="100px"><strong>类别</strong></td>
+            <td width="100px"><strong>金额</strong></td>
+            <td colspan="2" width="150px"><strong>说明</strong></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

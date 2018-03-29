@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>记账</title>
+    <style type="text/css">
+        .mainDiv {
+            border: black 1px solid;
+            width: 1000px;
+            margin-left: 100px;
+            padding-left: 100px;
+            padding-right: 100px;
+        }
+        span{
+            margin-right: 10px;
+        }
+        input .text{
+            border: GrayText 0px solid;
+            border-bottom: black 1px solid;
+            width: 50px;
+        }
+    </style>
+    <script src="js/jquery-3.3.1.min.js" type="application/javascript"></script>
+    <script src="js/core.js" type="application/javascript"></script>
+    <script type="application/javascript">
+        $(function () {
+            billType(2);
+            $('#submit').click(function () {
+                var type = $('input[type="radio"]:checked').val();
+                if(type == null || type == ''){
+                    alert('请选择记账类型!');
+                    return;
+                }
+                var title = $('#title').val();
+                if(title == null || title == ''){
+                    alert('请输入记账标题!');
+                    $('#title').focus();
+                    return
+                }
+                var price = $('#price').val();
+                if(price.NaN || price < 1){
+                    alert('金额必须为纯数字,切大于0!');
+                    $('#price').focus();
+                    return;
+                }
+                var time = $('#bill_time').val();
+                var s = /^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}(\s+([0-9]){1,2}:([0-9]){1,2}:([0-9]){1,2})??$/;
+                var p = new RegExp(s);
+                if(time == null || time == ''){
+                    alert('记账日期不能为空!');
+                    $('#bill_time').focus();
+                    return;
+                }else if(!p.test(time)){
+                    alert('记账日期格式不正确!');
+                    $('#bill_time').focus();
+                    return;
+                }
+                var explain = $('#explain').val();
+                if(explain == null || explain == ''){
+                    alert('请填写记账说明!');
+                    $('#explain').focus();
+                    return;
+                }
+                $.post('addBill',$('form').serialize(),function (data) {
+                    if(data.state == 200){
+                        alert('添加成功!');
+                        location.href = 'index.html';
+                    }else{
+                        alert(data.msg);
+                    }
+                },'json');
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="mainDiv" align="center">
+        <h2><strong>记账</strong></h2>
+        <div align="left">
+            <form>
+                <input type="hidden" name="id" value="-1" />
+                <span id="typeTitle">类型:</span>
+                <div id="types"></div>
+                <br/>
+                <span>标题:</span>
+                <input name="title" id="title" required class="text" type="text" />
+                <span>金额:</span>
+                <input type="number" id="price" name="price" value="0" />
+                <br/>
+                <span>日期:</span>
+                <input type="text" id="bill_time" required placeholder="请输入yyyy-MM-dd格式日期" name="bill_time" width="100px" />
+                <br/>
+                <span>说明:</span>
+                <textarea name="explain" id="explain" required style="width: 500px;height: 100px;resize: none"></textarea>
+                <br/>
+                <input type="reset" value="重置" />
+                <input type="button" value="保存" id="submit" />
+                <input type="button" value="返回" onclick="javascript:history.back()" />
+            </form>
+        </div>
+    </div>
+</body>
+</html>
